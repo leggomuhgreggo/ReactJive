@@ -18,8 +18,8 @@ class TaskGroup extends PureComponent {
 
         <ul className="task-list">
           {taskIds.map(id => (
-            <li className="task-item layout-row">
-              <TaskItem key={id} id={id} />
+            <li key={id} className="task-item layout-row">
+              <TaskItem id={id} />
             </li>
           ))}
         </ul>
