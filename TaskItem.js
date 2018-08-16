@@ -1,10 +1,12 @@
 import React, { PureComponent, Fragment } from "react";
 import { connect } from "react-redux";
 import { debounce } from "lodash";
+
 import { removeTask, updateTask, getTaskById } from "./redux";
+import TextArea from "./TextArea";
 
 class TaskItem extends PureComponent {
-  handleInputChange = value => {
+  handleTextAreaChange = value => {
     const { handleUpdateTask } = this.props;
     handleUpdateTask && debounce(handleUpdateTask({ value }));
   };
@@ -17,7 +19,7 @@ class TaskItem extends PureComponent {
     const { value } = this.props;
     return (
       <Fragment>
-        <TextArea onChange={this.handleInputChange} value={value} />
+        <TextArea onChange={this.handleTextAreaChange} value={value} />
         <div className="button-container">
           <button
             className="remove-item"

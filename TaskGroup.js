@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment } from "react";
 import { connect } from "react-redux";
 
 import { addTask } from "./redux";
+import TaskItem from "./TaskItem";
 
 class TaskGroup extends PureComponent {
   handleAddButtonClick = taskProps => {
