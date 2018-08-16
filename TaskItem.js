@@ -6,9 +6,9 @@ import { removeTask, updateTask, getTaskById } from "./redux";
 import TextArea from "./TextArea";
 
 class TaskItem extends PureComponent {
+  debouncedUpdateTask = debounce(handleUpdateTask({ value }));
   handleTextAreaChange = value => {
-    const { handleUpdateTask } = this.props;
-    handleUpdateTask && debounce(handleUpdateTask({ value }));
+    this.props.handleUpdateTask && this.debouncedUpdateTask(value);
   };
   handleRemoveButtonClick = () => {
     const { id, handleRemoveTask } = this.props;
