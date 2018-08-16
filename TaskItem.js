@@ -1,29 +1,48 @@
-import * as _ from 'lodash'
-import React, { Component } from 'react'
+import React, { PureComponent, Fragment } from "react";
+import { connect } from "react-redux";
+import { debounce } from "lodash";
 
-class TaskItem extends Component {
-    constructor () {
-        super()
-    }
+import { removeTask, updateTask, getTaskById } from "./redux";
+import TextArea from "./TextArea";
 
-    handleInputChange (e) {
-        const taskText = e.target.value
-        // return this.props.isForToday
-        //     ? this.updateTodayTasks(taskText)
-        //     : this.updateYesterdayTasks(taskText)
-        return this.props.updateTasks(taskText)
-    }
+class TaskItem extends PureComponent {
+  debouncedUpdateTask = debounce(handleUpdateTask({ value }));
+  handleTextAreaChange = value => {
+    this.props.handleUpdateTask && this.debouncedUpdateTask(value);
+  };
+  handleRemoveButtonClick = () => {
+    const { id, handleRemoveTask } = this.props;
+    handleRemoveTask && handleRemoveTask(id);
+  };
 
-    render () {
-        return (
-            <li className="task layout-row" key={this.props.taskKey}>
-                <textarea onChange={e => this.handleInputChange(e)} value={this.props.task.name}></textarea>
-                <div className="button-container">
-                    <button className="remove-item" onClick={e => this.props.handleRemoveItem(e, this.props.isForToday)}>X</button>
-                </div>
-            </li>
-        )
-    }
+  render() {
+    const { value } = this.props;
+    return (
+      <Fragment>
+        <TextArea onChange={this.handleTextAreaChange} value={value} />
+        <div className="button-container">
+          <button
+            className="remove-item"
+            onClick={this.handleRemoveButtonClick}
+          >
+            X
+          </button>
+        </div>
+      </Fragment>
+    );
+  }
 }
 
-export const TaskItem
+const mapStateToProps = ({ tasks }, { id }) => ({
+  ...getTaskById(tasks, id)
+});
+
+const mapDispatchToProps = dispatch => ({
+  handleRemoveTask: id => dispatch(removeTask(id)),
+  handleUpdateTask: task => dispatch(updateTask(task))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskItem);

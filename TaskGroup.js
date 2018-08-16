@@ -1,31 +1,42 @@
-import React, { Component } from "react";
-import TaskList from "../taskList/TaskList";
+import React, { PureComponent, Fragment } from "react";
+import { connect } from "react-redux";
 
-class TaskGroup extends Component {
-  constructor(props) {
-    super(props);
-  }
+import { addTask } from "./redux";
+import TaskItem from "./TaskItem";
+
+class TaskGroup extends PureComponent {
+  handleAddButtonClick = taskProps => {
+    this.props.handleAddTask && this.props.handleAddTask(taskProps);
+  };
 
   render() {
-    const last24Text = "Yesterday (Last 24)";
-    const this24Text = "Today (This 24)";
+    const { taskIds, taskGroupType } = this.props;
+
     return (
-      <div className="task-set-container">
-        <TaskList
-          key={"last-24"}
-          label={last24Text}
-          classType={"yesterday"}
-          isForToday={true}
-        />
-        <TaskList
-          key={"this-24"}
-          label={this24Text}
-          classType={"today"}
-          isForToday={true}
-        />
-      </div>
+      <Fragment>
+        <span className="text">{groupLabel}</span>
+
+        <ul className="task-list">
+          {taskIds.map(id => (
+            <li key={id} className="task-item layout-row">
+              <TaskItem id={id} />
+            </li>
+          ))}
+        </ul>
+
+        <button className="add-item" onClick={this.handleAddButtonClick}>
+          +
+        </button>
+      </Fragment>
     );
   }
 }
 
-export default TaskGroup;
+const mapDispatchToProps = dispatch => ({
+  handleAddTask: taskProps => dispatch(addTask(taskProps))
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(TaskGroup);
